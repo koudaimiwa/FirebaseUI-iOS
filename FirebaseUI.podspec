@@ -109,7 +109,7 @@ Pod::Spec.new do |s|
     facebook.public_header_files = 'FacebookAuth/FirebaseFacebookAuthUI/*.h'
     facebook.source_files = 'FacebookAuth/FirebaseFacebookAuthUI/*.{h,m}'
     facebook.dependency 'FirebaseUI/Auth'
-    facebook.dependency 'FBSDKLoginKit', '~> 8.0.0'
+    facebook.dependency 'FBSDKLoginKit', '~> 14.1.0'
     facebook.resource_bundle = {
       'FirebaseFacebookAuthUI' => ['FacebookAuth/FirebaseFacebookAuthUI/**/*.{png,lproj}']
     }
