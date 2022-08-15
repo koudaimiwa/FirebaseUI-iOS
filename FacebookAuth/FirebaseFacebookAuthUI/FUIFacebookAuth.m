@@ -150,11 +150,9 @@ static NSString *const kFacebookDisplayName = @"FacebookDisplayName";
       [self completeSignInFlowWithAccessToken:nil error:newError];
     } else {
       // Retrieve email.
-      [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{ @"fields" : @"email" }]
-          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result,
-                                       NSError *error) {
-        self->_email = result[@"email"];
-      }];
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:@{ @"fields" : @"email" }] startWithCompletion: ^(id<FBSDKGraphRequestConnecting>  _Nullable connection, id  _Nullable result, NSError * _Nullable error) {
+                self->_email = result[@"email"];
+        }];
       [self completeSignInFlowWithAccessToken:result.token.tokenString
                                         error:nil];
     }
