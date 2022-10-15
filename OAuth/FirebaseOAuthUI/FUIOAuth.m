@@ -306,13 +306,45 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - ASAuthorizationControllerDelegate
 
++ (NSPersonNameComponentsFormatter *)nameFormatter {
+  static NSPersonNameComponentsFormatter *nameFormatter;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    nameFormatter = [[NSPersonNameComponentsFormatter alloc] init];
+  });
+  return nameFormatter;
+}
+
 - (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithAuthorization:(ASAuthorization *)authorization API_AVAILABLE(ios(13.0)) {
-  ASAuthorizationAppleIDCredential* appleIDCredential = authorization.credential;
-  NSString *idToken = [[NSString alloc] initWithData:appleIDCredential.identityToken encoding:NSUTF8StringEncoding];
-  FIROAuthCredential *credential = [FIROAuthProvider credentialWithProviderID:@"apple.com"
-                                                                      IDToken:idToken
-                                                                  accessToken:nil];
-  _providerSignInCompletion(credential, nil, nil, nil);
+    ASAuthorizationAppleIDCredential *appleIDCredential = authorization.credential;
+      NSData *rawIdentityToken = appleIDCredential.identityToken;
+      if (rawIdentityToken == nil) {
+        // It's pretty awful to not have an error when login is unsuccessful, but Apple's docs
+        // don't provide any useful information here.
+        // https://developer.apple.com/documentation/authenticationservices/asauthorizationappleidcredential
+        NSLog(@"Sign in with Apple completed with authorization, but no jwt: %@", authorization);
+        _providerSignInCompletion(nil, nil, nil, nil);
+      }
+      NSString *idToken = [[NSString alloc] initWithData:appleIDCredential.identityToken encoding:NSUTF8StringEncoding];
+      FIROAuthCredential *credential = [FIROAuthProvider credentialWithProviderID:@"apple.com"
+                                                                          IDToken:idToken
+                                                                      accessToken:nil];
+      FIRAuthResultCallback result;
+      NSPersonNameComponents *nameComponents = appleIDCredential.fullName;
+      if (nameComponents != nil) {
+        NSPersonNameComponentsFormatter *formatter = [[self class] nameFormatter];
+        NSString *displayName = [formatter stringFromPersonNameComponents:nameComponents];
+
+        result = ^(FIRUser *_Nullable user,
+                   NSError *_Nullable error) {
+          if (user != nil) {
+            FIRUserProfileChangeRequest *displayNameUpdate = [user profileChangeRequest];
+            displayNameUpdate.displayName = displayName;
+            [displayNameUpdate commitChangesWithCompletion:^(NSError * _Nullable error) {}];
+          }
+        };
+      }
+      _providerSignInCompletion(credential, nil, result, nil);
 }
 
 - (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithError:(NSError *)error API_AVAILABLE(ios(13.0)) {

@@ -342,7 +342,7 @@ static NSString *const kFirebaseAuthUIFrameworkMarker = @"FirebaseUI-iOS";
 - (void)invokeResultCallbackWithAuthDataResult:(nullable FIRAuthDataResult *)authDataResult
                                            URL:(nullable NSURL *)url
                                          error:(nullable NSError *)error {
-  dispatch_async(dispatch_get_main_queue(), ^{
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
     if ([self.delegate respondsToSelector:@selector(authUI:didSignInWithAuthDataResult:URL:error:)]) {
       [self.delegate authUI:self
           didSignInWithAuthDataResult:authDataResult
