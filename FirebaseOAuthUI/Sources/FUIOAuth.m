@@ -152,7 +152,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (FUIOAuth *)twitterAuthProviderWithAuthUI:(FUIAuth *)authUI {
     return [[FUIOAuth alloc] initWithAuthUI:authUI
                                  providerID:@"twitter.com"
-                            buttonLabelText:@"Sign in with Twitter"
+                            buttonLabelText:@"ツイッターでログイン"
                                   shortName:@"Twitter"
                                 buttonColor:[UIColor colorWithRed:71.0f/255.0f
                                                             green:154.0f/255.0f
@@ -249,7 +249,7 @@ NS_ASSUME_NONNULL_BEGIN
   }
   FUIOAuth *provider = [[FUIOAuth alloc] initWithAuthUI:authUI
                                              providerID:@"apple.com"
-                                        buttonLabelText:@"Sign in with Apple"
+                                        buttonLabelText:@"Appleでログイン"
                                               shortName:@"Apple"
                                             buttonColor:buttonColor
                                               iconImage:iconImage
