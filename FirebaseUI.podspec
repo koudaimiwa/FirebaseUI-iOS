@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'OAuth' do |oauth|
-    oauth.dependency 'FirebaseOAuthUI', '12.3.2'
+    oauth.dependency 'FirebaseOAuthUI', '~> 12.3'
   end
 
   s.subspec 'Phone' do |phone|
