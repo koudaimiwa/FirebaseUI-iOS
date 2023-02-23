@@ -256,7 +256,6 @@ NS_ASSUME_NONNULL_BEGIN
                                                  scopes:@[@"name", @"email"]
                                        customParameters:nil
                                            loginHintKey:nil];
-  provider.buttonAlignment = FUIButtonAlignmentCenter;
   provider.buttonTextColor = buttonTextColor;
   return provider;
 }
